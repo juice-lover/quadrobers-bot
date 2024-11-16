@@ -47,3 +47,12 @@ def webhook():
     bot.process_new_updates([update])
     print("WebHook получен")  # Проверка на получение запроса
     return 'ok', 200
+
+
+@bot.message_handler(commands=['get'])
+def get_users(message):
+
+    show_users_func = database.show_users_table()
+
+    if show_users_func:
+        bot.reply_to(message, show_users_func)

@@ -50,3 +50,70 @@ def add_user_to_db(telegram_id):
             postgresql_pool.putconn(conn)  # Возвращаем соединение в пул
 
 
+def show_users_table():
+    # Получаем соединение из пула
+    conn = postgresql_pool.getconn()
+
+    if conn:
+        try:
+            # Создаем курсор
+            cursor = conn.cursor()
+
+            # Выполняем запрос
+            cursor.execute("SELECT * FROM users;")
+
+            # Получаем все строки из результата запроса
+            show_users = cursor.fetchall()
+
+            # Возвращаем данные
+            return show_users
+
+        except Exception as e:
+            print(f"Ошибка при выполнении запроса: {e}")
+        finally:
+            # Возвращаем соединение в пул
+            postgresql_pool.putconn(conn)
+
+    else:
+        print("Не удалось получить соединение из пула.")
+        return None
+
+# # Функция для создания таблицы users
+# def create_users_table():
+#     if not postgresql_pool:
+#         print("Пул соединений не создан, не могу продолжить.")
+#         return
+#
+#     try:
+#         # Получаем соединение из пула
+#         conn = postgresql_pool.getconn()
+#
+#         with conn.cursor() as cursor:
+#             # Создаем таблицу (если она не существует)
+#             cursor.execute("""
+#                 CREATE TABLE IF NOT EXISTS users (
+#                     telegram_id BIGINT PRIMARY KEY,
+#                     user_balance DECIMAL DEFAULT 0,
+#                     registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+#                 );
+#             """)
+#             conn.commit()
+#             print("Таблица users успешно создана (или уже существует).")
+#     except Exception as e:
+#         print(f"Ошибка при создании таблицы: {e}")
+#     finally:
+#         # Возвращаем соединение в пул
+#         if conn:
+#             postgresql_pool.putconn(conn)
+
+
+
+# # Функция для подключения к базе данных
+# def get_db_connection():
+#     try:
+#         connection = psycopg2.connect(ConfigBotClass.URL_DATABASE)
+#         print("Подключение успешно!")
+#         return connection
+#     except Exception as e:
+#         print(f"Ошибка при подключении к базе данных: {e}")
+#         return None
