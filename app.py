@@ -45,7 +45,7 @@ def webhook():
     return 'ok', 200
 
 
-@bot.message_handler(commands=['a', 'adm', 'admin'])
+@bot.message_handler(commands=['a'])
 def admin_panel(message):
     telegram_id = message.from_user.id  # Получаем ID пользователя Telegram
 
