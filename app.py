@@ -45,10 +45,23 @@ def webhook():
     return 'ok', 200
 
 
-@bot.message_handler(commands=['get'])
-def get_users(message):
+@bot.message_handler(commands=['a', 'adm', 'admin'])
+def admin_panel(message):
+    telegram_id = message.from_user.id  # Получаем ID пользователя Telegram
 
-    show_users_func = database.show_users_table()
+    # Проверка, является ли пользователь администратором
+    if telegram_id == ConfigBotClass.TELEGRAM_ID_ADMIN:
+        try:
+            # Получаем количество пользователей из базы данных
+            number_of_users = database.get_number_of_users()
 
-    if show_users_func:
-        bot.reply_to(message, show_users_func)
+            # Формируем сообщение для админа
+            text_message = (f"Админ панель\n\n"
+                            f"Количество пользователей: {number_of_users}")
+
+            bot.reply_to(message, text_message)
+
+        except Exception as e:
+            # Обработка возможных ошибок
+            bot.reply_to(message, "Произошла ошибка при получении данных.")
+            print(f"Ошибка в админ панели: {e}")

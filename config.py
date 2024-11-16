@@ -21,6 +21,6 @@ class BotConfiguration:
     WELCOME_START_STICKER = "CAACAgIAAxkBAAENIqdnONAyUIOMY1CGiv8OSPyjuzBcmAAC8g4AAiC3eEoFWmVpmDwMMjYE"
     URL_DATABASE = os.getenv("URL_DATABASE")
     START_USER_BALANCE = 0
-
+    TELEGRAM_ID_ADMIN = os.getenv("TELEGRAM_ID_ADMIN")
 
 ConfigBotClass = BotConfiguration()
