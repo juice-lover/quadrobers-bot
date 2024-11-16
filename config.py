@@ -19,6 +19,8 @@ class BotConfiguration:
     API_TOKEN_TELEGRAM = os.getenv("API_TOKEN_TELEGRAM") # telegram token
     WEBHOOK_SECRET_PATH = os.getenv("WEBHOOK_SECRET_PATH")
     WELCOME_START_STICKER = "CAACAgIAAxkBAAENIqdnONAyUIOMY1CGiv8OSPyjuzBcmAAC8g4AAiC3eEoFWmVpmDwMMjYE"
+    URL_DATABASE = os.getenv("URL_DATABASE")
+    START_USER_BALANCE = 0
 
 
 ConfigBotClass = BotConfiguration()
