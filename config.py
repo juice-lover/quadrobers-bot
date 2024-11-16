@@ -18,7 +18,7 @@ import secrets; print(secrets.token_hex())
 class BotConfiguration:
     API_TOKEN_TELEGRAM = os.getenv("API_TOKEN_TELEGRAM") # telegram token
     WEBHOOK_SECRET_PATH = os.getenv("WEBHOOK_SECRET_PATH")
-    WELCOME_START_STICKER = "CAACAgIAAxkBAAENGNFnL-K5oNhn-EKq91KbNppSEs-V9AAC0wADVp29CvUyj5fVEvk9NgQ"
+    WELCOME_START_STICKER = "CAACAgIAAxkBAAENIqdnONAyUIOMY1CGiv8OSPyjuzBcmAAC8g4AAiC3eEoFWmVpmDwMMjYE"
 
 
 ConfigBotClass = BotConfiguration()
