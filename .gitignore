@@ -1,0 +1,6 @@
+
+# игнорирование -> .env -> .venv -> .idea
+
+.venv
+.idea
+.env
