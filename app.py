@@ -74,7 +74,7 @@ def send_msg_all_users(call):
         cancel_button = types.KeyboardButton(text="Отменить операцию")
         markup.add(cancel_button)
 
-        bot.send_message(telegram_id, "Отправьте ваше сообщение, чтобы начать рассылку:")
+        bot.send_message(telegram_id, "Отправьте ваше сообщение, чтобы начать рассылку:", reply_markup=markup)
         # Ожидаем сообщение от админа и передаем аргументы в функцию
         bot.register_next_step_handler(call.message, lambda message: admin_panel.send_msg_all_users_function(bot, message))
     else:
