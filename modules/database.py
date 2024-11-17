@@ -59,39 +59,38 @@ def get_number_of_users():
         return 0  # Возвращаем 0, если соединение не удалось получить
 
     try:
-        cursor = conn.cursor()  # Создаём курсор
-        cursor.execute("SELECT COUNT(*) FROM users;")  # Запрос на получение количества пользователей
-        result = cursor.fetchone()  # Получаем результат
-
-        # Возвращаем количество пользователей
-        return result[0] if result else 0
+        with conn.cursor() as cursor:  # Используем with для автоматического закрытия курсора
+            cursor.execute("SELECT COUNT(*) FROM users;")
+            result = cursor.fetchone()
+            return result[0] if result else 0
 
     except Exception as e:
         print(f"Ошибка при выполнении запроса: {e}")
-        return 0  # В случае ошибки возвращаем 0
+        return 0
 
     finally:
-        postgresql_pool.putconn(conn)  # Возвращаем соединение в пул
+        postgresql_pool.putconn(conn)
 
 
 def get_telegram_id_all_users():
     """Функция для получения telegram_id всех пользователей в базе данных."""
     conn = postgresql_pool.getconn()
 
-    if not conn or conn.closed:
-        print("Соединение закрыто или не удалось получить соединение из пула.")
+    if not conn:  # Проверяем, что соединение получено
+        print("Не удалось получить соединение из пула.")
         return []
 
     try:
-        cursor = conn.cursor()
-        cursor.execute("SELECT telegram_id FROM users;")
-        result = cursor.fetchall()
-        return result
+        with conn.cursor() as cursor:  # Используем with для автоматического закрытия курсора
+            cursor.execute("SELECT telegram_id FROM users;")
+            result = cursor.fetchall()
+            return result
 
     except Exception as e:
         print(f"Ошибка при выполнении запроса: {e}")
         return []
 
     finally:
-        postgresql_pool.putconn(conn)
+        if conn:  # Проверяем соединение перед возвращением в пул
+            postgresql_pool.putconn(conn)
 
