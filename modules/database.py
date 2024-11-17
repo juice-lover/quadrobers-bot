@@ -72,3 +72,25 @@ def get_number_of_users():
 
     finally:
         postgresql_pool.putconn(conn)  # Возвращаем соединение в пул
+
+
+def get_telegram_id_all_users():
+    """Функция для получения telegram_id всех пользователей в базе данных."""
+    conn = postgresql_pool.getconn()  # Получаем соединение из пула
+
+    if not conn:
+        print("Не удалось получить соединение из пула.")
+        return []
+
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT telegram_id FROM users;")
+        result = cursor.fetchall()  # Получаем результат в виде списка кортежей
+        return result
+
+    except Exception as e:
+        print(f"Ошибка при выполнении запроса: {e}")
+        return []
+
+    finally:
+        postgresql_pool.putconn(conn)  # Возвращаем соединение в пул
