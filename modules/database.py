@@ -6,7 +6,7 @@ from psycopg2 import pool
 # Создаем пул соединений
 try:
     postgresql_pool = psycopg2.pool.SimpleConnectionPool(
-        2, 5,
+        2, 3,
         dsn=ConfigBotClass.URL_DATABASE
     )
     if postgresql_pool:
