@@ -5,7 +5,8 @@ from config import ConfigBotClass
 import telebot
 
 from flask import Flask, request
-from modules import database
+from modules import database, keyboard, admin_panel
+from telebot import types
 
 
 # Инициализация бота
@@ -46,26 +47,36 @@ def webhook():
 
 
 @bot.message_handler(commands=['a'])
-def admin_panel(message):
+def admin_panel_func(message):
     telegram_id = message.from_user.id  # Получаем ID пользователя Telegram
+    is_admin = telegram_id == ConfigBotClass.TELEGRAM_ID_ADMIN # Проверяем, является ли пользователь администратором
 
-    # Проверка, является ли пользователь администратором
-    if telegram_id == ConfigBotClass.TELEGRAM_ID_ADMIN:
-        try:
-            # Получаем количество пользователей из базы данных
-            number_of_users = database.get_number_of_users()
-
-            # Формируем сообщение для админа
-            text_message = (f"Админ панель\n\n"
-                            f"Количество пользователей: {number_of_users}")
-
-            bot.reply_to(message, text_message)
-
-        except Exception as e:
-            # Обработка возможных ошибок
-            bot.reply_to(message, "Произошла ошибка при получении данных.")
-            print(f"Ошибка в админ панели: {e}")
-
+    if is_admin:
+        # Отправляем админ-панель
+        admin_panel.send_admin_panel_to_admin(bot, message)
     else:
-        # Ответ, если пользователь не администратор
-        bot.reply_to(message, "В доступе отказано!")
+        # Сообщаем пользователю об отказе в доступе
+        bot.reply_to(message, "🚫 В доступе отказано!")
+
+
+# Обработчик callback-запросов
+@bot.callback_query_handler(func=lambda call: call.data == "send_msg_all_users_button")
+def send_msg_all_users(call):
+    # Удаляем предыдущее сообщение
+    bot.delete_message(call.message.chat.id, call.message.message_id)
+    telegram_id = call.from_user.id
+    is_admin = telegram_id == ConfigBotClass.TELEGRAM_ID_ADMIN  # Проверяем, является ли пользователь администратором
+
+    if is_admin:
+
+        # генерируем кнопку
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+        cancel_button = types.KeyboardButton(text="Отменить операцию")
+        markup.add(cancel_button)
+
+        bot.send_message(telegram_id, "Отправьте ваше сообщение, чтобы начать рассылку:")
+        # Ожидаем сообщение от админа и передаем аргументы в функцию
+        bot.register_next_step_handler(call.message, lambda message: admin_panel.send_msg_all_users_function(bot, message))
+    else:
+        # Сообщаем пользователю об отказе в доступе
+        bot.send_message(telegram_id, "🚫 В доступе отказано!")
