@@ -2,6 +2,7 @@ import time
 from datetime import datetime, timedelta
 
 from modules import database, keyboard
+from telebot import types
 
 
 # Функция обработки вызова админ панели
@@ -27,14 +28,14 @@ def send_msg_all_users_function(bot, message):
 
     # Проверяем текст сообщения
     if message.text == "Отменить операцию":
-        bot.reply_to(message, "✅ Операция успешно отменена!")
+        bot.reply_to(message, "✅ Операция успешно отменена!", reply_markup=types.ReplyKeyboardRemove())
         return
 
     # Получаем список telegram_id всех пользователей из базы данных
     users_telegram_ids = database.get_telegram_id_all_users()
 
     if not users_telegram_ids:
-        bot.reply_to(message, "⚠️ Не удалось получить список пользователей.")
+        bot.reply_to(message, "⚠️ Не удалось получить список пользователей.", reply_markup=types.ReplyKeyboardRemove())
         return
 
     # Извлекаем ID пользователей из списка кортежей
@@ -56,7 +57,7 @@ def send_msg_all_users_function(bot, message):
         f"Задержка между отправками: {delay} сек\n"
         f"Примерная длительность рассылки: {minutes} мин {seconds} сек"
     )
-    bot.reply_to(message, admin_message)
+    bot.reply_to(message, admin_message, reply_markup=types.ReplyKeyboardRemove())
 
     # Счетчики для статистики
     successful = 0
